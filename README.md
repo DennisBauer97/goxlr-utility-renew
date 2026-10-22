@@ -82,15 +82,30 @@ Gate Amount to 0, then reconfigure it once your mic is working. Once done, go ex
 The Utility's UI is web based and served directly from the utility to your web browser of choice (if configured, it
 can also be served to a web browser on another computer). The Utility also provides an 'Application' which wraps the
 web UI into a dedicated app. If you're using the Utility on Windows this option is presented to you during install.
-The UI design was modelled around the official application in an attempt to provide a familiar interface for those
-moving from Windows to other platforms, rather than forcing people to learn a new configuration paradigm.
-
-![image](https://github.com/GoXLR-on-Linux/goxlr-utility/assets/574943/8f14bd2c-e67a-42e5-bd9f-b3cb367e171d)
+The UI is organised into Mixer, Routing, Microphone, Effects, Sampler, Lighting, Profiles and System pages, works
+on phone-sized screens, can be used with keyboard and screen readers, and respects the 'reduce motion' setting of
+your operating system. It is available in English and German.
 
 If you're running on Linux, the 'Application' isn't provided as part of the base utility installation. If you'd
 prefer to use it, check out the [GoXLR UI Repository](https://github.com/frostyCoolSlug/goxlr-utility-ui/), which
 provides various builds for distributions. Once installed, you should be able to go to System -> Utility Settings
 and change the UI Handler there.
+
+### Developing the UI
+
+The source of the web UI lives in [`ui/`](ui) (Vue 3, TypeScript, Vite). The daemon embeds the built files from
+`daemon/web-content` at compile time, so after changing the UI run `npm run build` in `ui/` and commit the result.
+
+```sh
+cd ui
+npm ci
+npm run mock      # fake daemon with a GoXLR on :14564 (add -- --mini for a GoXLR Mini)
+npm run dev       # in a second terminal: http://localhost:5173, proxied to the daemon on :14564
+npm run lint && npm run typecheck && npm test
+npm run build     # writes to ../daemon/web-content
+```
+
+`npm run dev` also works against a real daemon running on the default port; set `GOXLR_DAEMON` to point elsewhere.
 
 ## Building
 
